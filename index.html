@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#b42318">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Solution Express">
+  <title>Solution Express Auto Parts</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="mark">SE</div><div><strong>Solution Express</strong><small>Auto Parts et Multi Service</small></div></div>
+  <div class="offline" id="connection">● Offline-ready</div>
+</header>
+<main>
+  <section class="hero">
+    <div><p class="eyebrow">BUSINESS MANAGEMENT</p><h1>Your business,<br>in your pocket.</h1><p>Manage stock, sales and expenses from your phone.</p></div>
+    <div class="hero-icon">⚙️</div>
+  </section>
+  <section class="stats">
+    <article><span>Products in stock</span><b id="statProducts">0</b></article>
+    <article><span>Sales recorded</span><b id="statSales">0</b></article>
+    <article><span>Expenses recorded</span><b id="statExpenses">0</b></article>
+  </section>
+  <nav class="tabs" aria-label="Main navigation">
+    <button class="tab active" data-page="dashboard">Overview</button>
+    <button class="tab" data-page="inventory">Inventory</button>
+    <button class="tab" data-page="sales">Sales</button>
+    <button class="tab" data-page="expenses">Expenses</button>
+    <button class="tab" data-page="settings">Settings</button>
+  </nav>
+
+  <section class="page active" id="dashboard">
+    <div class="section-head"><div><p class="eyebrow">AT A GLANCE</p><h2>Business overview</h2></div></div>
+    <div class="money-grid">
+      <article class="money"><span>Sales total (USD equivalent)</span><b id="totalSales">$0.00</b></article>
+      <article class="money"><span>Expenses total (USD equivalent)</span><b id="totalExpenses">$0.00</b></article>
+      <article class="money highlight"><span>Estimated net (before product cost)</span><b id="netTotal">$0.00</b></article>
+    </div>
+    <div class="panel">
+      <h3>Quick actions</h3>
+      <div class="quick">
+        <button class="action" data-go="inventory">＋ Add a product</button>
+        <button class="action" data-go="sales">＋ Record a sale</button>
+        <button class="action" data-go="expenses">＋ Record an expense</button>
+      </div>
+    </div>
+    <div class="panel"><h3>Low-stock products</h3><div id="lowStock" class="empty">No products yet. Add inventory to get started.</div></div>
+    <p class="note">This first version saves records on this device. Use Settings to export a backup regularly.</p>
+  </section>
+
+  <section class="page" id="inventory">
+    <div class="section-head"><div><p class="eyebrow">PRODUCTS</p><h2>Inventory</h2></div><button class="primary" id="newProduct">＋ Add</button></div>
+    <input class="search" id="productSearch" placeholder="Search name, SKU, category…" aria-label="Search inventory">
+    <div id="productList" class="list empty">No products yet. Tap Add to create your first item.</div>
+    <form id="productForm" class="panel form hidden">
+      <h3 id="productFormTitle">Add product</h3>
+      <input type="hidden" id="productId">
+      <label>Product name<input id="pName" required placeholder="e.g. Motorcycle brake pads"></label>
+      <div class="two"><label>SKU / code<input id="pSku" placeholder="Optional"></label><label>Category<select id="pCategory"><option>Car parts</option><option>Motorcycle parts</option><option>Tires</option><option>Batteries</option><option>Oil & lubricants</option><option>Tools</option><option>Accessories</option><option>Other</option></select></label></div>
+      <div class="two"><label>Quantity<input id="pQty" type="number" min="0" step="1" required value="0"></label><label>Low-stock alert at<input id="pAlert" type="number" min="0" step="1" value="3"></label></div>
+      <div class="two"><label>Cost price<input id="pCost" type="number" min="0" step="0.01" value="0"></label><label>Selling price<input id="pPrice" type="number" min="0" step="0.01" value="0" required></label></div>
+      <label>Currency for prices<select id="pCurrency"><option>USD</option><option>HTG</option></select></label>
+      <div class="form-actions"><button type="button" class="secondary" id="cancelProduct">Cancel</button><button class="primary" type="submit">Save product</button></div>
+    </form>
+  </section>
+
+  <section class="page" id="sales">
+    <div class="section-head"><div><p class="eyebrow">TRANSACTIONS</p><h2>Record a sale</h2></div></div>
+    <form id="saleForm" class="panel form">
+      <label>Product<select id="saleProduct" required><option value="">Choose a product</option></select></label>
+      <div class="two"><label>Quantity sold<input id="saleQty" type="number" min="1" step="1" value="1" required></label><label>Sale currency<select id="saleCurrency"><option>USD</option><option>HTG</option></select></label></div>
+      <label>Unit selling price<input id="salePrice" type="number" min="0" step="0.01" required></label>
+      <label>Customer name (optional)<input id="saleCustomer" placeholder="Customer"></label>
+      <button class="primary full" type="submit">Save sale</button>
+    </form>
+    <div class="panel"><h3>Recent sales</h3><div id="saleList" class="empty">No sales recorded yet.</div></div>
+  </section>
+
+  <section class="page" id="expenses">
+    <div class="section-head"><div><p class="eyebrow">CASH FLOW</p><h2>Expenses</h2></div></div>
+    <form id="expenseForm" class="panel form">
+      <label>Description<input id="eDescription" required placeholder="e.g. Transport, rent, customs"></label>
+      <div class="two"><label>Amount<input id="eAmount" type="number" min="0.01" step="0.01" required></label><label>Currency<select id="eCurrency"><option>USD</option><option>HTG</option></select></label></div>
+      <label>Expense date<input id="eDate" type="date" required></label>
+      <button class="primary full" type="submit">Save expense</button>
+    </form>
+    <div class="panel"><h3>Recent expenses</h3><div id="expenseList" class="empty">No expenses recorded yet.</div></div>
+  </section>
+
+  <section class="page" id="settings">
+    <div class="section-head"><div><p class="eyebrow">PREFERENCES & BACKUP</p><h2>Settings</h2></div></div>
+    <div class="panel form">
+      <label>Exchange rate: 1 USD = how many HTG?<input id="exchangeRate" type="number" min="0.01" step="0.01"></label>
+      <button class="primary full" id="saveSettings">Save exchange rate</button>
+      <p class="note">Update this rate whenever your business exchange rate changes. Reports convert using the rate saved here.</p>
+    </div>
+    <div class="panel">
+      <h3>Backup your business data</h3>
+      <p class="note">Export a backup file and keep it somewhere safe. Import it to restore your records on this device.</p>
+      <div class="quick"><button class="action" id="exportData">Download backup</button><label class="action file-label">Restore backup<input type="file" id="importData" accept="application/json"></label></div>
+    </div>
+    <div class="panel danger-zone"><h3>Reset app data</h3><p class="note">This permanently clears records stored on this device. Export a backup first.</p><button class="danger" id="resetData">Delete all local data</button></div>
+    <p class="note">Owner-only use is not yet protected by a login. Do not enter sensitive customer or financial information until secure sign-in and cloud backup are added.</p>
+  </section>
+</main>
+<footer>Solution Express Auto Parts et Multi Service · Haiti</footer>
+<div id="toast" role="status" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
